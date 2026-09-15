@@ -1,0 +1,4 @@
+interface:
+  display_name: "飞书摄影策划"
+  short_description: "搜集唯美摄影参考，生成适合手机查看和独立导图的紧凑飞书策划文档"
+  default_prompt: "使用 $feishu-photography-shoot-plan 生成 24 张摄影参考的紧凑飞书文档：两块 3×4 拍摄参考板和一块每行最多 4 张完整单图的来源板，标题与必要说明均放在画板内。"
