@@ -1,29 +1,30 @@
 ---
 name: feishu-photography-shoot-plan
-description: Research photography references and create compact Feishu shoot-plan documents with mobile-friendly three-column shot boards, camera and model guidance, and a separate uncropped four-column source gallery. Use for photography reference collection, imitation-shoot planning, or creating and refining Feishu photography boards. Do not use for single-image critique or image generation alone.
+description: Research photography references and create compact shoot plans delivered as either a Feishu document or a verified PDF, with shot boards, camera and model guidance, and an uncropped source gallery. Use for photography reference collection, imitation-shoot planning, or refining an existing plan. Do not use for single-image critique or image generation alone.
 ---
 
-# Feishu Photography Shoot Plan
+# Photography Shoot Plan
 
-Produce beautiful reference images with concise, executable shooting guidance. Each whiteboard must make sense when exported as a standalone image. The user's established default is a compact document with two 3×4 shot boards for 24 shots and one separate source-gallery board; an explicit new brief overrides these defaults.
+Produce beautiful reference images with concise, executable shooting guidance. Let the user choose one delivery format: a Feishu document or a directly generated PDF. Do not create both unless requested. The established default layout is two 3×4 shot boards for 24 shots plus a separate source gallery; an explicit new brief overrides it.
 
 ## Route the work
 
 - Use `photography-shoot-planner` to audit shot-size coverage, pose diversity, model direction, shooting order, and safety.
 - Use browser or web research only when references must be collected. Preserve the canonical post URL, creator, and work title whenever available.
-- Use `lark-doc` to read, create, or edit the Feishu document and to locate embedded whiteboard tokens.
-- Use `lark-whiteboard` to create, inspect, update, export, and verify the board. Follow its required authentication and update workflow rather than recreating Feishu API calls here.
+- For Feishu delivery, use `lark-doc` to read, create, or edit the document and locate embedded whiteboard tokens; use `lark-whiteboard` to create, inspect, update, export, and verify each board.
+- For PDF delivery, use `pdf:pdf` to generate, render, inspect, and verify the final PDF. Follow that skill's artifact-operation and output requirements.
 - Use this skill as the orchestration layer. The referenced skills remain authoritative for their own tools and permissions.
 
-## Choose a mode
+## Choose delivery and operation modes
 
-- **New plan:** collect or ingest references, create the local source folder, create a Feishu document with the required shot boards and source board, then verify the live result.
-- **Update plan:** read the target document and board, export a backup, change only the requested images, copy, or layout, then verify the live result.
+- Establish `delivery_format` as `feishu` or `pdf` before producing the deliverable. If the user has not chosen, ask one short question because the choice changes tools, permissions, output, and verification. Do not silently default to Feishu.
+- **New plan:** collect or ingest references, create the local source folder and shot plan, build the chosen deliverable, then verify it.
+- **Update plan:** inspect the existing Feishu document or PDF, preserve the source or a backup, change only the requested images, copy, or layout, then verify the result in the same format unless conversion was requested.
 - If the user asks only for aesthetic criticism or one generated image, stop using this skill and route to the narrower capability.
 
 ## Establish the brief
 
-- Capture the theme, target image count, column count, reference source, required shot sizes, props, location, lighting direction, safety constraints, and whether the target is new or existing.
+- Capture the delivery format, theme, target image count, column count, reference source, required shot sizes, props, location, lighting direction, safety constraints, and whether the target is new or existing.
 - Ask only for missing choices that materially change the result. If unspecified, use three columns and up to four rows per shot board. A 24-shot / 3×8 brief means two consecutive 3×4 boards by default; use a single 3×8 canvas only when explicitly requested. Preserve continuous numbering across boards.
 - Treat models as adults unless the user explicitly provides a different lawful, non-sexual context. Never infer consent to publish or commercially reuse source images.
 
@@ -54,30 +55,26 @@ python3 <skill-dir>/scripts/validate_plan.py <path-to-shot-plan.json>
 
 - Fix all errors. Treat warnings as review prompts; do not silence them by duplicating images or deleting useful safety detail.
 
-## Build the board and document
+## Build the deliverable
 
-- Before rendering or changing layout, read [references/whiteboard-layout.md](references/whiteboard-layout.md).
-- Keep images dominant, gaps narrow, and copy readable when a card is enlarged on a phone. A full-board overview is for scanning; do not promise that tiny copy is readable at fit-to-screen scale.
-- The default document contains only its title, the consecutive shot boards, an optional single “参考来源” heading, and the source board. No introductory descriptions, per-source document headings, usage notes, execution-reminder section, or native source table. If extra prose is explicitly requested, use unordered lists for long supporting text and unnumbered headings.
-- Each shot board has an internal title such as “主题 · 摄影参考 01–12”; the source board has “主题 · 摄影参考来源” plus verified source / image counts. Put all information needed to understand an exported image inside its board, including titles, shot numbers, guidance, and source attribution.
-- For a new board, preview locally before writing to Feishu.
-- For an existing board, export `source`, `raw`, and `preview` first. Use raw-node editing for text-only changes. Use the whiteboard SVG edit workflow when images or geometry change.
-- Generate one idempotent token per logical board update and reuse it only for retries of that same update.
+- Keep images dominant, gaps narrow, and copy readable at the intended viewing size. Each shot board has an internal title such as “主题 · 摄影参考 01–12”; the source section has “主题 · 摄影参考来源” plus verified source and image counts.
+- Put everything needed to understand a board in the deliverable itself: title, shot numbers, guidance, and source attribution. Do not rely on chat prose to complete it.
+- For Feishu delivery, read [references/whiteboard-layout.md](references/whiteboard-layout.md), preview new boards locally, then follow the live whiteboard update workflow.
+- For PDF delivery, read [references/pdf-layout.md](references/pdf-layout.md), generate the PDF directly from the validated plan and source manifest, and do not create or mutate Feishu content.
 
-## Verify the live result
+## Verify the result
 
-- Re-export every live board after writing. For shot boards, verify expected image count, one image per card, guidance, grid, and continuous numbering. For the source board, verify one full image per card, at most four cards per row, source order, original aspect ratios, attribution, and its internal title.
-- For text-only edits, confirm image tokens and image geometry are unchanged.
-- Confirm document board order and tokens, and that no obsolete prose or duplicate source table remains when the user requested the compact structure. Verify replacement boards before deleting old document blocks.
-- A successful write or local image preview alone is insufficient to claim live visual success. Verify live raw nodes and export preview. If the preview is cached, avoid rewriting the board merely to refresh it; allow a short delay and export again. If still stale, state exactly which checks passed and that live visual verification is pending.
-- Keep the pre-edit raw export until verification passes. Restore it if the live structure is incomplete or corrupted.
+- In either format, verify expected image count, one image per shot card, required guidance, grid, continuous numbering, source order, original aspect ratios, attribution, and internal titles.
+- For Feishu, re-export every live board, inspect raw nodes and preview, confirm document order and tokens, and retain the pre-edit export until verification passes.
+- For PDF, reopen the final file, verify page count and text structure, render every page to images, and inspect both page overview and card-detail legibility. A successful PDF write or text extraction alone is insufficient.
+- For text-only updates, confirm images and their geometry are unchanged.
 
 ## Stop conditions
 
 - Do not fabricate missing source links, creator names, original capture settings, or safety facts.
 - If there are too few distinct references, report the coverage gap instead of repeating images to reach a number.
-- If authentication or edit permission is missing, follow the relevant Lark skill's minimum-permission flow and pause for user authorization.
-- Do not publish, message, or share the final document beyond the target explicitly authorized by the user.
+- If Feishu authentication or edit permission is missing, follow the relevant Lark skill's minimum-permission flow and pause for user authorization. This does not block PDF delivery when the user chose PDF.
+- Do not publish, message, or share the final document or PDF beyond the target explicitly authorized by the user.
 
 ## Completion criteria
 
@@ -85,4 +82,4 @@ python3 <skill-dir>/scripts/validate_plan.py <path-to-shot-plan.json>
 - The final reference set covers the requested shot sizes and has intentional variation rather than cosmetic repetition.
 - Every card has a unique image reference, concise technical guidance, and an executable model cue.
 - Risky shots have actionable boundaries or cancellation conditions.
-- The Feishu document is compact, all boards are independently understandable as exported images, and live structure and rendering have been checked. Source photographs remain uncropped independent images, with strong unselected works included when available.
+- The chosen deliverable is compact and independently understandable, and its format-specific structure and rendering have been checked. Source photographs remain uncropped independent images, with strong unselected works included when available.
