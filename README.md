@@ -51,21 +51,21 @@
 
 ## 成品示例
 
-### 黑道千金 · 带刀动作与无刀氛围
+### 第二组 · 酷感写真 / 摄影参考 01–12
 
-- 12 张三列拍摄卡片。
-- 按“带刀动作 / 无刀氛围”组织画面。
-- 每张卡片包含编号、机位、光线和动作引导。
+- 第一块 3×4 连续编号拍摄板。
+- 涵盖全身、半身和近景等不同景别。
+- 每张卡片包含机位、光线和模特口令。
 
-<img src="docs/examples/black-gold-blade-shot-board.png" alt="黑道千金带刀动作与无刀氛围拍摄参考板" width="720">
+<img src="docs/examples/cool-portrait-shot-board-01-12.jpg" alt="第二组酷感写真摄影参考 01 到 12 拍摄板" width="720">
 
-### 奥黛塔 · 摄影参考 13–24
+### 白棚亚系哥特 / 摄影参考 13–24
 
 - 第二块 3×4 连续编号拍摄板。
-- 采用适合手机纵向浏览的紧凑布局。
+- 延续前一块拍摄板的布局与编号。
 - 保留不同景别、姿态、光线与环境的变化。
 
-<img src="docs/examples/odette-shot-board-13-24.png" alt="奥黛塔摄影参考 13 到 24 拍摄板" width="720">
+<img src="docs/examples/white-studio-gothic-shot-board-13-24.jpg" alt="白棚亚系哥特摄影参考 13 到 24 拍摄板" width="720">
 
 ## 项目结构
 
